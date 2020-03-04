@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_title %} Inicio {% endblock %}
+{% block content %}
+<main role="main" class="inner cover text-center"><br><br>
+<img class="mb-4" src="{% static 'image/icon1.png' %}" alt="" width="130" height="160"><br><br>
+<div class="container">
+<h2 style=" color:#FFF">La cuenta de Google con la que has accedido no se ha registrado como un canal de Youtube, por favor verifica el estado de tu cuenta e intentalo nuevamente.</h2>
+</div>
+<br>
+<p class="lead">
+<a href="https://www.youtube.com/create_channel" target="_blank" class="btn btn-lg btn-danger">ir a Youtube</a>
+<a href="{% url 'auth' %}" class="btn btn-lg btn-success">He creado mi cuenta</a>
+</p>
+</main>
+{% endblock %}
+
+

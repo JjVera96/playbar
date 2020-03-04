@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_title %} {{ request.user}} {% endblock %}
+{% block content %}
+		<div class="container-fluid">
+
+           <nav aria-label="breadcrumb">
+     <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}"><span class="glyphicon glyphicon-arrow-left"></span></a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ request.user}}</li>
+     </ol>
+    </nav>
+
+
+
+    		{% if not msg_usuario == '' or not msg_password == '' %}
+    		<h3 class='text-success'>{{ msg_usuario }}<br>{{ msg_password }}</h3>
+    		{% endif %}
+            <div class="panel-group text-white" id="accordion" role="tablist">
+			  <div class="panel panel-success tablest">
+			    <div class="panel-heading" role="tab" id="headingOne">
+			      <h4 class="panel-title">
+			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+			          Datos de Cuenta
+			        </a>
+			      </h4>
+			    </div>
+			    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+			    
+			      <div class="panel-body">
+				      <div class="col-xs-7 col-sm-10 col-md-10">
+				      	<form method="POST" enctype="multipart/form-data"> {% csrf_token %} 
+						  <div class="form-group row">
+						    <label for="staticUsername" class="col-sm-2 col-form-label">Nombre de Usuario:</label>
+						    <div class="col-sm-10">
+						      <input type="text" readonly class="form-control-plaintext text-white" id="staticUsername" value="{{ bar.user }}">
+						    </div>
+						  </div>
+						  <div class="form-group row">
+						    <label for="input" class="col-sm-2 col-form-label">Email:</label>
+						    <div class="col-sm-10">
+						      <input id="Form" type="text" name="email" class="form-control" id="inputEmail" value="{{ request.user.email }}" disabled="true">
+						    </div>
+						  </div>
+						  <div class="form-group row">
+						    <label for="input" class="col-sm-2 col-form-label">Nombre:</label>
+						    <div class="col-sm-10">
+						      <input id="Form2" type="text" name="first_name" class="form-control" id="inputNombre" value="{{ request.user.first_name }}" disabled="true">
+						    </div>
+						  </div>
+						  <div class="form-group row">
+						  	<label for="exampleFormControlFile1" class="col-sm-2 col-form-label">logo:</label>
+						  	<div class="col-sm-10">
+						  	{% if not user.logo == "" %}
+							<img src="{{ request.user.logo.url }}" width="200" height="200" class="img-fluid" alt="Responsive image">
+							<input id="Form3" type="file" name="logo" accept=".jpeg, .jpg, .png" class="form-control-file" disabled="true" >
+							{% else %}
+							<input id="Form3" type="file" name="logo" accept=".jpeg, .jpg, .png" class="form-control-file" disabled="true">
+							{% endif %}
+				        	</div>
+
+				        </div>
+				        	<button id='Form4' type="submit" class="btn btn-outline-success" disabled="true"><span class="glyphicon glyphicon-ok"></span>Guardar</button>
+				        	
+				        	<a href="javascript:habilitaCan('Form', 'Form2', 'Form3', 'Form4', 'Form5')" ><button id=Form5  type="submit" class="btn btn-outline-danger" disabled="true"><span class="glyphicon glyphicon-remove"> </span>Cancelar</button></a>
+				        	
+						 
+				        </div>
+				        </form>
+				      <div class="col-xs-5 col-sm-2 col-md-2">
+
+						<a href="javascript:habilitaForm('Form', 'Form2', 'Form3', 'Form4', 'Form5','Form6')"><button type="submit" class="btn btn-outline-success"><span class="glyphicon glyphicon-pencil"> </span>Editar</button></a>
+
+						
+						
+						
+					</div>
+
+			      </div>
+			      
+			    </div>
+			  </div>
+
+			  <div class="panel panel-success tablest">
+			    <div class="panel-heading" role="tab" id="headingThree">
+			      <h4 class="panel-title">
+			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+			          Ajustes de Cuenta
+			        </a>
+			      </h4>
+			    </div>
+			    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+			      <div class="panel-body">
+			      	<form method="POST" name="f1" enctype="multipart/form-data"> {% csrf_token %} 
+			      	<div class="col-xs-12 col-sm-8 col-md-8">
+			  			 
+			  			 <div class="form-group row">
+						    <label for="inputPassword" class="col-sm-2 col-form-label">Contraseña Actual</label>
+						    <div class="col-sm-10">
+						      <input id="pass" name="password_actual" type="password" class="form-control"  disabled="true" min="8" size="20">
+						    </div>
+						  </div>
+			  			 <div class="form-group row">
+						    <label for="inputPassword" class="col-sm-2 col-form-label">Nueva Contraseña</label>
+						    <div class="col-sm-10">
+						      <input id="pass1" name="password_nueva" type="password" class="form-control"  disabled="true" min="8" size="20">
+						    </div>
+						  </div>
+						  <div class="form-group row">
+						    <label for="inputPassword" class="col-sm-2 col-form-label">Repetir Contraseña</label>
+						    <div class="col-sm-10">
+						      <input id="pass2" name="password_confirmar" type="password" class="form-control" min="8" disabled="true" size="20" onkeyup="verificar(this.value);">
+						     
+						      <br>
+						      <div style="display:none" class="alert alert-danger" id="alert" role="alert">
+								   <span id="mensaje"><!-- mensaje de verificación --></span>
+								</div>
+								<div style="display:none" class="alert alert-success" id="alert2" role="alert">
+								   <span id="mensaje1"><!-- mensaje de verificación --></span>
+								</div>
+						    </div>
+						  </div>
+						  <button id='pass3' type="submit" class="btn btn-outline-success" disabled="true"><span class="glyphicon glyphicon-ok"></span>Guardar</button>
+				        	
+				     <a href="javascript:habilitaCan('pass', 'pass1', 'pass2', 'pass3', 'pass4)" ><button id=pass4  type="submit" class="btn btn-outline-danger" disabled="true"><span class="glyphicon glyphicon-remove"></span>Cancelar</button></a>
+			      	</div>
+			      	
+			      	
+			      </form>
+			      	<div class="col-xs-12 col-sm-4 col-md-4">
+			      			<a href="javascript:habilitaPass('pass', 'pass1', 'pass2', 'pass3', 'pass4')"><button type="submit" class="btn btn-outline-success"><span class="glyphicon glyphicon-pencil"></span>Editar</button></a>
+
+			       </div>
+			      </div>
+			    </div>
+			  </div>
+		
+
+
+
+			  <div class="panel panel-success tablest">
+			    <div class="panel-heading" role="tab" id="headingThree">
+			      <h4 class="panel-title">
+			        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+			          Codigo Qr
+			        </a>
+			      </h4>
+			    </div>
+			    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+			      <div class="panel-body">
+			      	<div id="muestra" class="col-xs-12 col-sm-8 col-md-8">
+			      	 <img src="{{ user.qr.url }}" class="img-fluid" alt="Responsive image" >
+			      	</div>
+			      	<div class="col-xs-12 col-sm-4 col-md-4">
+			      	<a href="javascript:imprSelec('muestra')"><button class="btn btn-outline-success" ><span class="glyphicon glyphicon-print"></span>Imprimir Codigo QR</button></a>
+			       </div>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+
+<script type="text/javascript">
+
+
+function habilitaForm(campoForm,campoForm2,campoForm3,campoForm4,campoForm5)
+{
+    var estadoActual = document.getElementById(campoForm);
+  	var estadoActual2 = document.getElementById(campoForm2);
+  	var estadoActual3 = document.getElementById(campoForm3);
+  	var estadoActual4 = document.getElementById(campoForm4);
+  	var estadoActual5 = document.getElementById(campoForm5);
+  	
+
+    estadoActual.disabled= false;
+    estadoActual2.disabled= false;
+    estadoActual3.disabled= false;
+    estadoActual4.disabled= false;
+    estadoActual5.disabled= false;
+
+    
+}
+function habilitaPass(campoForm,campoForm2,campoForm3,campoForm4)
+{
+    var estadoActual = document.getElementById(campoForm);
+  	var estadoActual2 = document.getElementById(campoForm2);
+  	var estadoActual3 = document.getElementById(campoForm3);
+  	var estadoActual4 = document.getElementById(campoForm4);
+
+    estadoActual.disabled= false;
+    estadoActual2.disabled= false;
+    estadoActual3.disabled= false;
+    estadoActual4.disabled= false;
+    
+}
+function habilitaCan(campoForm,campoForm2,campoForm3,campoForm4,campoForm5,campoForm6)
+{
+    var estadoActual = document.getElementById(campoForm);
+  	var estadoActual2 = document.getElementById(campoForm2);
+  	var estadoActual3 = document.getElementById(campoForm3);
+  	var estadoActual4 = document.getElementById(campoForm4);
+  	var estadoActual5 = document.getElementById(campoForm5);
+  	var estadoActual6 = document.getElementById(campoForm6);
+
+    estadoActual.disabled= true;
+    estadoActual2.disabled= true;
+    estadoActual3.disabled= true;
+    estadoActual4.disabled= true;
+    estadoActual5.disabled= true;
+    estadoActual6.disabled= true;
+}
+
+</script>
+<script type="text/javascript">
+//<![CDATA[
+function verificar(){
+var p1 = document.getElementById('pass1');
+var p2 = document.getElementById('pass2');
+var btn_guardar = document.getElementById('pass3');
+var estado = document.getElementById('alert');
+var estado2 = document.getElementById('alert2');
+
+	if( p1.value != p2.value){
+		document.getElementById('mensaje').innerHTML = "Las contraseñas no coinciden";
+		estado.style.display = "block";
+		estado2.style.display = "none";
+		btn_guardar.disabled = true
+	}else{
+		document.getElementById('mensaje1').innerHTML = "Las contraseñas coinciden";
+		estado.style.display = "none";
+		estado2.style.display = "block";
+		btn_guardar.disabled = false
+	}
+}
+//]]>
+</script>
+<script type="text/javascript">
+function imprSelec(muestra)
+{var ficha=document.getElementById(muestra);var ventimp=window.open(' ','popimpr');ventimp.document.write(ficha.innerHTML);ventimp.document.close();ventimp.print();ventimp.close();}
+</script>
+<br><br><br><br><br><br><br><br>
+	</div>
+	
+	
+{% endblock %}
+	

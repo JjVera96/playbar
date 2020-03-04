@@ -1,0 +1,178 @@
+{% load static %}
+<!doctype html>
+<html lang="ES">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>ePlayt | Olvidar cuenta</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/new-age.min.css' %}" rel="stylesheet">
+    <style>
+      .login-body {
+      font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background: #f3f3f3;
+      color: #333;
+      font-size: 16px;
+      direction: ltr;
+      }
+      
+      .form-signin
+      {
+          max-width: 400px;
+          padding: 15px;
+          margin: 0 auto;
+      }
+      .form-signin .form-signin-heading, .form-signin .checkbox
+      {
+          margin-bottom: 10px;
+      }
+      .form-signin .checkbox
+      {
+          font-weight: normal;
+      }
+      .form-signin .form-control
+      {
+          position: relative;
+          font-size: 16px;
+          height: auto;
+          padding: 10px;
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+      }
+      .form-signin .form-control:focus
+      {
+          z-index: 2;
+      }
+      .form-signin input[type="email"]
+      {
+          margin-bottom: -1px;
+          border-bottom-left-radius: 0;
+          border-bottom-right-radius: 0;
+      }
+      .form-signin input[type="password"]
+      {
+          margin-bottom: 10px;
+          border-top-left-radius: 0;
+          border-top-right-radius: 0;
+      }
+      
+      
+       .body{
+        background: url({% static 'image/bg-inicio.jpg' %}) no-repeat fixed center center;
+        background-size: cover;
+      }
+
+
+      .tablest {
+          background: rgb(255, 255, 255); /* This is for ie8 and below */
+          background: rgba(0, 0, 0, 0.5);
+        }
+
+
+    .cover-container {
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    /* Padding for spacing */
+    .inner {
+      padding: 2rem;
+    }
+
+
+    /*
+     * Header
+     */
+
+    .masthead {
+      margin-bottom: 2rem;
+    }
+
+    .masthead-brand {
+      margin-bottom: 0;
+      color: rgba(255,255,255,1);
+      background-color: transparent;
+    }
+
+    @media (min-width: 48em) {
+      .masthead-brand {
+        float: left;
+      }
+    }
+    footer
+{
+    position: absolute;
+    margin-top:93px;
+    width:100%;
+    height:100px;
+   background: rgba(0, 0, 0, 0.9);
+ }
+ hr
+ {
+      background: #ccc;
+  max-width: 400px;
+  height: 1px;
+  border-style: inset;
+    border-width: 0.5px;
+
+
+ }
+
+    </style>
+    <!-- Custom styles for this template -->
+  </head>
+
+   <body class="text-center body">
+
+         
+    <div class="container-fluid col tablest">
+      
+       <div class="masthead clearfix">
+            <div class="inner">
+              <a href="/"><img class="masthead-brand mb-4" src="{% static 'image/playbar.png' %}" alt="" width="200" height="40"></a>
+            </div>
+       </div>
+    </div>
+          <br>
+      <form method="POST" class="form-signin login-body">{% csrf_token %} 
+        <img class="mb-4" src="{% static 'image/icon1.png' %}" alt="" width="85" height="105">
+
+        <h1 class="h3 mb-3 font-weight-normal">Recuperar Contraseña</h1>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="text" id="inputEmail" class="form-control" name="email" placeholder="Email" required autofocus>
+        <br>
+        {% if msg %}
+        {{ msg }} <br>
+        {% endif %}
+        
+        <button class="btn btn-lg btn-success btn-block" type="submit">Recuperar</button>
+        <hr data-reactid="60">
+        <h5>¿Quieres pertenecer a Play Bar?</h5><a href="/">¡Contáctanos Ya!</a>
+      </form>
+
+       <footer>
+      <div class="container">
+        <p>&copy; Your Website 2018. All Rights Reserved.</p>
+        <ul class="list-inline">
+          <li class="list-inline-item">
+            <a href="#">Privacy</a>
+          </li>
+          <li class="list-inline-item">
+            <a href="#">Terms</a>
+          </li>
+          <li class="list-inline-item">
+            <a href="#">FAQ</a>
+          </li>
+        </ul>
+      </div>
+    </footer>
+  </body>
+</html>

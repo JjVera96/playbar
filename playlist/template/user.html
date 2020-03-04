@@ -1,0 +1,428 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="ES">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title> ePlayt </title>
+     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Bootstrap CSS -->
+
+   <style>
+      .body{
+        background: url({% static 'image/bg-inicio.jpg' %}) no-repeat fixed center center;
+        background-size: cover;
+      }
+
+
+      .tablest {
+          background: rgb(255, 255, 255); /* This is for ie8 and below */
+          background: rgba(0, 0, 0, 0.5);
+        }
+
+        .opa {
+          background: rgb(255, 255, 255); /* This is for ie8 and below */
+          background: rgba(0, 0, 0, 0.4);
+        }
+
+
+    .cover-container {
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    /* Padding for spacing */
+    .inner {
+      padding: 1rem;
+    }
+
+
+    /*
+     * Header
+     */
+
+    .masthead {
+      margin-bottom: 0.5rem;
+    }
+
+    .masthead-brand {
+      margin-bottom: 0;
+      color: rgba(255,255,255,1);
+      background-color: transparent;
+    }
+    @media (min-width: 40em) {
+      .masthead-brand {
+        float: center;
+      }
+    }
+    </style>
+
+<style type="text/css">
+#cd {
+  margin: 0.1rem;
+   font-family: 'Source Code Pro','Andale Mono',Monaco,'Courier New',monospace;
+   font-size: 20px;
+   font-weight: 50;
+}
+.halfway {
+  color: red;
+}
+.ended {
+  color: #fff;
+   font-size: 125% !important;
+   line-height: 0;
+}
+
+.thanks {
+   font-weight: 100;
+}
+.highlight
+{
+  color: rgba(255,255,255,0.3);
+  background-color: transparent;
+}
+    </style>
+
+    {% block scripts %}
+    {% endblock %}
+  </head>
+
+  <body class="body">
+      <div class="container-fluid tablest">
+          <header class="mb-auto">
+           <div class="masthead clearfix">
+                <div class="inner" align="center">
+                  <img class="masthead-brand mb-4" src="{% static 'image/playbar.png' %}" alt="" width="300" height="60">
+                </div>
+           </div>
+          </header>
+        </div>
+
+        <div class="container-fluid">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item active" aria-current="page">lista {{ title }}</li>
+            </ol>
+          </nav>
+
+
+          <div class="main row-fluid ">
+              <div class="container-fluid col-xs-12 col-sm-12 col-md-6">
+                {% if elementos.0 %}
+                  <center><h3 style="padding-top: 50px;" class="text-white">{{elementos.1}}.</h3></center>
+                {% else %}
+                  <center>
+                    <h1 style="color: white" id="clock"></h1>
+                    <label id="labeljeje" for="demo" style="color: white;"><h3>¡Vota por la siguiente canción antes de que se agote el tiempo!</h3></label>
+
+                  </center>
+                  <div style="padding-top: 40px; color: white;">
+                    <div id="message2" style="color: white;">
+                      <center><h2>¡Has votado por</h2></center>
+                    </div>
+                  </div>
+                  <form id="options" method="POST"> {% csrf_token %}
+
+
+                     <div class="panel panel-success opa">
+                      <div class="panel-heading">
+                        <h4 class="panel-title">
+                         Se esta reproduciendo {{ name }}
+                        </h4>
+                      </div>
+                    <table  class="table table-dark table-striped tablest">
+                      <thead>
+                         <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Nombre</th>
+                          <th scope="col">Voto</th>
+                        </tr>
+                      </thead>
+
+
+                      <tbody>
+                        {% for elem in elementos.1 %}
+                        <tr>
+                          <td scope="row">{{ forloop.counter}}</td>
+                          <td id="c{{ forloop.counter }}" value="{{ elem.nombre }}">{{elem.nombre}}</td>
+                          <td>
+                            <button type="submit" name="videos" class="btn btn-outline-success sendVote" value="{{elem.video_id}}" value2="{{elem.nombre}}"><span class="glyphicon glyphicon-thumbs-up"></span></button>
+                          </td>
+                        </tr>
+                          {% endfor %}
+                      </tbody>
+                   </table>
+                 </div>
+                </form>
+                {% endif %}
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-6 inner cover text-center">
+
+                <form id="sugerencia" method="POST" > {% csrf_token %}
+                  <h2 style="color:#FFF">Para sugerir una canción</h2><br>
+
+                  <h4 style="color:#FFF">Copia aqui el url de
+                    <a class="text-danger" href="https://www.youtube.com/" target="_blank" title="Ir a Youtube">Youtube</a>
+                  </h4>
+
+                  <br>
+
+                  <input class="form-control col-xs-8 col-sm-8 col-md-8" type="text" placeholder="Buscar" aria-label="Search" name="video_id" required>
+                  <button class="btn btn-success my-2 my-sm-0" type="submit" value="Buscar Playlist">Enviar</button>
+                </form>
+
+                <form id="sugerencia_title" method="POST" > {% csrf_token %}
+
+                  <br><hr>
+
+                  <h4 style="color:#FFF">Escribe el titulo de la canción</h4>
+
+                  <br>
+
+                  <input class="form-control col-xs-8 col-sm-8 col-md-8" type="text" placeholder="Buscar" aria-label="Search" name="titulo_video" required>
+                  <button class="btn btn-success my-2 my-sm-0" type="submit" value="Buscar Playlist">Enviar</button>
+                  <p class="text-warning">Asegurate de que el titulo de la canción pueda ser encontrado por medio de <a class="text-danger" href="https://www.youtube.com/" target="_blank" title="Ir a Youtube">Youtube</a></p>
+                  <br>
+                  <h4 class="text-warning">Para que la cancion sea agregada al Playlist debe de ser autorizada por el administrador</h4>
+                  {% if msg %}
+                    <h5 class="text-white"> {{ msg }} </h5>
+                  {% endif %}
+                </form>
+
+              </div>
+            </div>
+        </div>
+
+
+         <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">Modal header</h3>
+            </div>
+            <div class="modal-body">
+                <p>One fine body…</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
+
+  <script src="{% static 'countdown/jquery.countdown.js' %}"></script>
+
+  <script type="text/javascript">
+      function getCookie(cname) {
+          var name = cname + "=";
+          var decodedCookie = decodeURIComponent(document.cookie);
+          var ca = decodedCookie.split(';');
+          for(var i = 0; i <ca.length; i++) {
+              var c = ca[i];
+              while (c.charAt(0) == ' ') {
+                  c = c.substring(1);
+              }
+              if (c.indexOf(name) == 0) {
+                  return c.substring(name.length, c.length);
+              }
+          }
+          return "";
+      }
+  </script>
+
+  <script type="text/javascript">
+      console.log(document.cookie);
+      $('#message').hide();
+      $('#message2').hide();
+      var cookie_exists = false;
+
+      if(getCookie("VotationJeje") != "")
+        cookie_exists = true;
+      else
+        cookie_exists = false;
+
+      console.log("nombre cancion: " + '{{ name }}');
+      console.log("cancion fuente: "+getCookie("Source"));
+
+      if(cookie_exists){
+          if(getCookie("Source") == '{{ name }}'){
+            $('#options').hide();
+            $('#message2').append('<center><h2>'+getCookie("SongJeje")+'!'+'</h2></center>').show();
+            $('#labeljeje').hide();
+          }
+          else{
+              console.log("aqui estoy");
+              document.cookie = 'VotationJeje' + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+              document.cookie = 'SongJeje' + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+              document.cookie = 'Source' + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+              window.location.reload(true);
+          }
+
+      }
+
+      window.onload = function() {
+
+        //sockect connection
+        var bar = {{ bar }};
+        var ws_scheme = window.location.protocol == "https:" ? "wss://" : "ws://";
+        var chatSocket = new WebSocket(ws_scheme + window.location.host + '/ws/' + bar );
+
+	      //console.log("web socket created at:", ws_scheme + window.location.host + '/ws/' + bar );
+        var valor_tiempo_init = 0;
+        var valor_tiempo_restart = 0;
+
+
+        chatSocket.onclose = function(e) {
+            console.log('Chat socket closed unexpectedly',e);
+        };
+
+      	chatSocket.onerror = function(e){
+      		console.log('Error:',e);
+      	};
+
+        //request for time to server
+        chatSocket.onopen = function() {
+            chatSocket.send(JSON.stringify({
+                'message': 'send me time'
+            }));
+
+        chatSocket.onmessage = function(e) {
+          var data = JSON.parse(e.data);
+          var message = data['message'];
+          //client events
+          console.log("server says:",message)
+
+          if (message['event'] == 'your_time') {
+              valor_tiempo_init = message['data'];
+              if(valor_tiempo_init != null && valor_tiempo_init > 0){
+                var date_to_init = Date.parse(Date()) + parseInt(valor_tiempo_init)*1000;
+                $('#clock').countdown(date_to_init, function(event) {
+                  $(this).html(event.strftime('%M:%S'));
+                });
+              }
+          }
+          if (message['event'] == 'pause') {
+              $('#clock').countdown('stop');
+          }
+          if (message['event'] == 'start_again') {
+
+              valor_tiempo_restart = message['data'];
+              var date_to_restart = Date.parse(Date()) + parseInt(valor_tiempo_restart)*1000;
+              $('#clock').countdown(date_to_restart, function(event) {
+                $(this).html(event.strftime('%M:%S'));
+              });
+
+          }
+          if (message['event'] == 'refresh') {
+
+
+              document.cookie = 'VotationJeje' + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+              document.cookie = 'SongJeje' + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+              document.cookie = 'Source' + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+
+
+              //location.reload(true);
+              window.location.reload(true);
+          }
+          if (message['event'] == 'ready') {
+
+
+              document.cookie = 'VotationJeje' + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+              document.cookie = 'SongJeje' + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+              document.cookie = 'Source' + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+              //window.location.reload(true);
+
+              window.location.reload(true);
+          }
+
+        };
+
+        };
+      };
+
+    //Votar por una cancion y Crear cookie para controlar los votos
+    $('.sendVote').click(function(){
+
+      //document.cookie = "VotationJeje=" + JSON.stringify({"voted": true, "song": $(this).attr('value2') });
+      document.cookie = "VotationJeje = true";
+      document.cookie = "SongJeje = " + $(this).attr('value2');
+      document.cookie = "Source = " + '{{ name }}';
+
+
+      $('#options').hide();
+      $('#message2').append('<center><h2>'+getCookie("SongJeje")+'</h2></center>').show();
+      $('#labeljeje').hide();
+
+
+    });
+    </script>
+
+    <script>
+
+        $('#sugerencia').on('submit', function (e) {
+          aux_url = window.location.pathname.split("user/")[1];
+          path = '/ajax/send_sugerencia_cliente/'
+          url = [aux_url.slice(0, 0), path, aux_url.slice(0)].join('');
+          //console.log(url);
+
+          e.preventDefault();
+
+          $.ajaxSetup({
+            headers: { "X-CSRFToken": '{{csrf_token}}' }
+          });
+
+          $.ajax({
+            type: 'post',
+            url: url ,
+            data: $('form').serialize(),
+            success: function (r) {
+              //$('#myModal').modal('show');
+              alert(r["mensaje"]);
+            }
+          });
+
+        });
+
+        $('#sugerencia_title').on('submit', function (e) {
+          aux_url = window.location.pathname.split("user/")[1];
+          path = '/ajax/send_sugerencia_cliente/'
+          url = [aux_url.slice(0, 0), path, aux_url.slice(0)].join('');
+          //console.log(url);
+
+          e.preventDefault();
+
+          $.ajaxSetup({
+            headers: { "X-CSRFToken": '{{csrf_token}}' }
+          });
+
+          $.ajax({
+            type: 'post',
+            url: url ,
+            data: $('form').serialize(),
+            success: function (r) {
+              //$('#myModal').modal('show');
+              alert(r["mensaje"]);
+            }
+          });
+
+        });
+
+    </script>
+
+  </body>
+
+</html>

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_title %} Inicio {% endblock %}
+{% block content %}
+<main role="main" class="inner cover text-center"><br><br>
+<img class="mb-4" src="{% static 'image/icon1.png' %}" alt="" width="130" height="160"><br><br>
+<div class="container">
+<h2 style=" color:#FFF">La playlist que has seleccionado fue borrada o no fue encontrada</h2>
+</div>
+<br>
+<p class="lead">
+<a href="{% url 'listas' %}" class="btn btn-lg btn-success">Volver</a>
+</p>
+</main>
+{% endblock %}
+
+

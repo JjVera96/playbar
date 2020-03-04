@@ -1,0 +1,417 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_title %} Lista {{ title }}{% endblock %}
+{% block content %}
+<style type="text/css">
+  #sugerencias{
+    max-height: 320px;
+  }
+</style>
+<div class="container-fluid ">
+    <nav aria-label="breadcrumb">
+     <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}"><span class="glyphicon glyphicon-arrow-left"></span></a></li>
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Listas de Reproduccion</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Lista {{ title }}</li>
+      </ol>
+    </nav>
+<br>
+{% if importada %}
+<div class="panel panel-success opa">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+                Lista Importada
+            </h4>
+          </div>
+            <div class="panel-body row-fluid">
+                <div class="col-xs-12 col-sm-12 col-md-8">
+                <h5 class="text-white">Nombre: {{ title }}</h5>
+                <!--
+                <h5 class="text-white">Autor: {{ importada.autor }} </h5>-->
+                <h5 class="text-white">Numero de canciones: {{ cantidad_elementos }} </h5>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-4">
+
+                  <button id="create_imported" class="btn btn-outline-success"><span class="glyphicon glyphicon-plus-sign"></span>Agregar A Mis Listas</button>                
+
+              </div>
+
+          </div>
+        </div>
+<br>
+{% endif %}
+<div class="main row-fluid ">
+  <div class="col-xs-12 col-sm-12 col-md-6 ">
+
+    <div class="panel panel-success opa">
+      <div class="panel-heading">
+      <h4 class="panel-title" id="title_video">
+      </h4>
+      </div>
+   <div class="embed-responsive embed-responsive-16by9">
+        <div class="embed-responsive-item" id="player"></div>
+    </div>
+  </div>
+    <div class="panel-group" id="accordion" role="tablist" >
+      <div class="panel panel-success tablest">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+             Buscar canción
+            </h4>
+          </div> 
+          <form class="text-center" method="POST" style="padding-bottom: 20px; padding-top: 30px;"> {% csrf_token %}
+                <h3 style=" color:#FFF">Para buscar la cancion copia aqui el url de Youtube</h3><br><br>
+
+                <input id="url_video" class="form-control col-xs-12 col-sm-8 col-md-8 col-lg-8" type="text" placeholder="Buscar" aria-label="Search" name="url_playlist" required>
+                
+                 <button id="btnr" value="1" onclick="repana(this.value)" class="btn btn-outline-success"><span class="glyphicon glyphicon-play-circle"></span>Reproducir</button>
+          </form>   
+                  <br>
+              </div>       
+      </div>
+
+
+  </div>
+
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-6 ">
+      <div class="pre-scrollable">
+      <table class="table table-dark table-striped tablest ">
+        {% if not videoid %}
+          <center><h1 style="padding-top: 40px; padding-bottom: 40px;" class="text-white">No hay videos en la playlist</h1></center>
+        {% else %}
+            <thead>
+               <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nombre</th>
+              </tr>
+            </thead>
+              <tbody id="videos_update">                
+              </tbody>
+        {% endif %}
+      </table>
+    </div>
+      <br>
+      {% if not importada %}
+      <div class="panel panel-success opacidad">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+           Canciones Sugeridas Por Los Clientes
+          </h4>
+        </div>
+      <div id="sugerencias" class="pre-scrollable">
+      <table class="table table-dark table-striped tablest " >
+        <thead>          
+        </thead>
+
+          <tbody id="sugerencias_update">
+          </tbody>
+
+      </table>
+      </div>
+    </div>
+    <center><button class="btn btn-success" id="actualizar">Ver Sugerencias De Los Clientes</button></center>
+    {% endif %}
+
+    </div>
+</div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+
+
+<script>
+ 
+    var bar = '{{request.user}}';
+    var ws_scheme = window.location.protocol == "https:" ? "wss://" : "ws://";
+    var chatSocket = new WebSocket(ws_scheme + window.location.host + '/ws/' + bar );
+
+    function send_player_event(mensaje){
+        console.log('dentro del send:',mensaje);
+        chatSocket.send(JSON.stringify({
+            'message': mensaje
+        }));
+    }
+
+
+
+</script>
+
+
+  <script type="text/javascript">
+
+     // 2. This code loads the IFrame Player API code asynchronously.
+      var tag = document.createElement('script');
+      var duration = 0
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '310',
+          width: '550',
+          videoId: '{{ videoid }}',
+          host: 'https://www.youtube.com', 
+          playerVars: {
+            'origin':'https://pruebaplaybar.herokuapp.com/playlist/{{ listaid }}/',
+            'enablejsapi' : 1,
+            'rel': 0,
+            
+          },
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange,
+            'onError': onPlayerError
+          }
+        });
+      }
+
+      // 4. The API will call this function when the video player is ready.
+      function onPlayerReady(event) {
+        //console.log("ON PLAYER READY");
+        event.target.setVolume(80);
+        event.target.playVideo();
+        duration = player.getDuration();               
+        send_data(duration, splitear() );
+        send_player_event( {'event':'ready', 'data':duration} ); // ('ready', player.getCurrentTime())
+        set_title();
+        green();
+
+        ///console.log(player.getVideoUrl());
+
+      }
+
+      // 5. The API calls this function when the player's state changes.
+      //    The function indicates that when playing a video (state=1),
+      //    the player should play for six seconds and then stop.
+      var done = false;
+      var paused = false;
+      function onPlayerStateChange(event) {
+        //console.log("done",done);//,"flag",flag);
+        if (event.data == YT.PlayerState.ENDED && !done) {
+          url = window.location.pathname;
+          $.get( url )
+            .done(function( data ) {
+              loadVideo(data);
+          });        
+          done = true; 
+          white();
+        }        
+
+        if(event.data == YT.PlayerState.PLAYING  && done) {
+          //pasarVariables("cronometro", "2");
+          set_title();  
+          duration = player.getDuration();        
+          console.log(splitear());
+          send_data(duration, splitear());
+          green();
+          send_player_event( {'event':'refresh', 'data':duration} ); // ('ready', player.getCurrentTime())
+          done = false;
+        }
+
+
+        if(event.data == YT.PlayerState.PAUSED) {
+          duration = player.getDuration(); 
+          send_player_event({'event': 'pause' , 'data': duration});
+          paused = true;
+        }
+        if(event.data == YT.PlayerState.PLAYING  && paused) {
+          send_player_event( {'event':'start_again', 'data':(player.getDuration() - player.getCurrentTime())} );          
+          paused = false;
+        }
+
+      }
+
+      function onPlayerError(event){
+          //console.log("SOY ONPLAYERERROR");
+          /*url = window.location.pathname;
+          $.get( url )
+            .done(function( data ) {  
+                loadVideo(data);
+                send_player_event( {'event':'refresh', 'data':duration} ); // ('ready', player.getCurrentTime())
+          });   */
+          location.reload(true);
+
+      }
+
+      chatSocket.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        var message = data['message'];
+        if (message == 'send me time') {
+          send_player_event({'event':'your_time', 'data':(player.getDuration() - player.getCurrentTime())});
+          if (player.getPlayerState() == 2 ){
+             send_player_event({'event': 'pause' , 'data': duration});
+          }
+        }       
+      };
+
+      function stopVideo() {
+        player.stopVideo();
+      }
+      function loadVideo(videoID) {         
+         player.loadVideoById(videoID,0);
+      }
+      function splitear(){
+
+        var expresionRegular = /\?.*v=/;
+        return player.getVideoUrl().split(expresionRegular)[1];
+       
+      }
+      //var duration = player.getDuration()
+      //console.log(duration);
+
+
+  function send_data(duration, videoId){
+
+      var obj = {'video_duration': duration, 'video_id': videoId }
+      url = window.location.pathname;
+      
+        $.ajaxSetup({
+          headers: { "X-CSRFToken": '{{csrf_token}}' }
+        });
+        $.ajax({
+            type: 'POST',
+            url: url,
+            contentType: 'application/json; charset=utf-8', //EDITED
+            data:  JSON.stringify(obj),
+            success: function(data) {
+                 console.log("melo send_data",obj); //EDITED
+            },
+            error: function(rs, e) {     
+                 console.log("paila send_data", rs, e, obj); //EDITED                            
+            }
+        });
+      }
+
+      // GUARDAR LA LISTA DE REPRODUCCION IMPORTADA Y DESHABILITAR EL BOTON
+      $(function(){
+          $('#create_imported').click(function() {
+              send_playlist_id('{{imported_list}}')
+          });
+      });
+
+      function send_playlist_id(playlist_id){
+
+      var object = {'playlist_id': playlist_id, 'cantidad_elementos': '{{cantidad_elementos}}' }
+      url = '/ajax/save_imported/';
+      
+        $.ajaxSetup({
+          headers: { "X-CSRFToken": '{{csrf_token}}' }
+        });
+        $.ajax({
+            type: 'POST',
+            url: url,
+            contentType: 'application/json; charset=utf-8', //EDITED
+            data:  JSON.stringify(object),
+            success: function(data) {
+                 console.log("melo",object); //EDITED
+                 $('#create_imported').hide();
+            },
+            error: function(rs, e) {     
+                 console.log("paila", rs, e); //EDITED                            
+            }
+        });
+      }
+
+      function set_title(){
+        document.getElementById( "title_video" ).innerText = player.getVideoData().title;
+      }
+
+      function green(){
+        //console.log(player.getVideoData().title);
+        document.getElementById(player.getVideoData().title).classList.add('bg-success');
+        //console.log(texto);
+      }
+
+      function white(){
+        //console.log(player.getVideoData().title);
+        document.getElementById(player.getVideoData().title).classList.remove('bg-success');
+        //console.log(texto);
+      }
+  </script>
+
+  <script type="text/javascript">
+    $('#actualizar').click(function(event) {
+
+      var url = "/ajax/load_sugerencia/";
+
+      $.get( url )
+        .done(function( data ) {
+           $("#sugerencias_update").html(data);
+      });      
+
+    });
+
+     $(document).ready(function() {
+          var url = "/ajax/load_sugerencia/";
+
+          $.get( url )
+            .done(function( data ) {
+               $("#sugerencias_update").html(data);
+          });
+
+         var url_load_videos = "/ajax/load_videos/";
+
+         aux_url = window.location.pathname.split("playlist/")[1];
+         url_load_videos_join = [aux_url.slice(0, 0), url_load_videos, aux_url.slice(0)].join('');
+          $.get( url_load_videos_join )
+            .done(function( data_get_aceptar ) {
+               $("#videos_update").html(data_get_aceptar);
+          });
+      });
+
+      setInterval(function(){ console.log('las credenciales expiraron?','{{credentials.expired}}','validas?','{{credentials.valid}}'); }, 50000);
+  </script>
+
+<script type="text/javascript">
+//<![CDATA[
+function verificar(){
+var p1 = document.getElementById('btn1');
+var p2 = document.getElementById('btn2');
+  if(p1.style.display == "none")
+  {
+    p1.style.display = "block";
+    p2.style.display = "none";
+  }else{
+    
+    p1.style.display = "none";
+    p2.style.display = "block";
+  }
+}
+//]]>
+</script>
+
+<script type="text/javascript">
+  function idvideo()
+{
+  var url = document.getElementById("url_video").value;
+  var id_video = url.split('v=')[1];
+  console.log(idvideo);
+  return (id_video);
+}
+
+function repana()
+{
+  var btn = document.getElementById('btnr');
+  var reproducir = idvideo();
+  if (reproducir != null) {
+    // cadena no está vacía
+    if (btn.value == 1){
+    console.log('entro');
+    white();
+    document.getElementById("url_video").value="";
+    loadVideo(reproducir);
+    }  
+  }
+}
+</script>
+
+
+{% endblock %}

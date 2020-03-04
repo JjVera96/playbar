@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_title %} Lista {{ title }}{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <nav aria-label="breadcrumb">
+     <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}"><span class="glyphicon glyphicon-arrow-left"></span></a></li>
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Listas de Reproduccion</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Lista {{ title }}</li>
+     </ol>
+    </nav>
+<br>
+
+        <div class="panel panel-success opa">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+                Lista Importada
+            </h4>
+          </div>
+            <div class="panel-body row-fluid">
+                <div class="col-xs-12 col-sm-12 col-md-8">
+                <h5 class="text-white">Nombre: {{ title }}</h5>
+                <h5 class="text-white">Autor: juan </h5>
+                <h5 class="text-white">Numero de canciones: 15 </h5>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-4">
+                <button class="btn btn-outline-success"><span class="glyphicon glyphicon-plus-sign"> Agregar A Mis Listas</span></button>
+              </div>
+
+          </div>
+        </div>
+<br>
+<div class="main row-fluid">
+  <div class="col-xs-12 col-sm-12 col-md-6">
+    <div class="panel panel-success opa">
+      <div class="panel-heading">
+      <h4 class="panel-title">
+        # Nombre de la cancion
+      </h4>
+      </div>
+    <div class="embed-responsive embed-responsive-16by9">
+        <div class="embed-responsive-item" id="player"></div>
+    </div>
+  </div>
+ </div>
+    <div class="col-xs-12 col-sm-12 col-md-6 pre-scrollable">
+      <table class="table table-dark table-striped tablest">
+        <thead>
+           <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nombre</th>
+          </tr>
+        </thead>
+          <tbody>
+            {% for elem in elementos %}
+            <tr>
+              <td scope="row">{{ forloop.counter}}</td>
+              <td>{{elem.title}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+      </table>
+    </div>
+</div>
+</div>
+
+<script>
+
+      // 2. This code loads the IFrame Player API code asynchronously.
+      var tag = document.createElement('script');
+      var duration = 0
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '310',
+          width: '550',
+          videoId: '{{ videoid }}',
+          host: 'https://www.youtube.com', 
+          playerVars: {
+            'origin':'https://pruebaplaybar.herokuapp.com/playlist/{{ listaid }}/',
+            'enablejsapi' : 1,
+            
+          },
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+      }
+
+      // 4. The API will call this function when the video player is ready.
+      function onPlayerReady(event) {
+        //console.log("ON PLAYER READY");
+        event.target.setVolume(80);
+        event.target.playVideo();
+        duration = player.getDuration();               
+        send_data(duration, false, splitear() );
+        ///console.log(player.getVideoUrl());
+      }
+
+
+      // 5. The API calls this function when the player's state changes.
+      //    The function indicates that when playing a video (state=1),
+      //    the player should play for six seconds and then stop.
+      var done = false;
+      function onPlayerStateChange(event) {
+
+        if (event.data == YT.PlayerState.ENDED && !done) {
+          url = window.location.pathname;
+          $.get( url )
+            .done(function( data ) {
+              console.log("soy la data ",data);
+              loadVideo(data);
+          });          
+          done = true; 
+
+        }        
+
+        if(event.data == YT.PlayerState.PLAYING  && done) {
+          duration = player.getDuration();        
+          //console.log(duration);
+          send_data(duration, true, splitear());
+          done = false
+        }
+
+      }
+
+      function stopVideo() {
+        player.stopVideo();
+      }
+      function loadVideo(videoID) {
+         player.loadVideoById(videoID,0);
+      }
+      function splitear(){
+         return player.getVideoUrl().split("?v=")[1]
+      }
+      //var duration = player.getDuration()
+      //console.log(duration);
+
+
+
+  </script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+  <script>
+
+
+  function send_data(duration, refresh, videoId){
+
+      var obj = {'video_duration': duration, 'refrescar': refresh, 'video_id': videoId }
+      url = window.location.pathname;
+      
+        $.ajaxSetup({
+          headers: { "X-CSRFToken": '{{csrf_token}}' }
+        });
+        $.ajax({
+            type: 'POST',
+            url: url,
+            contentType: 'application/json; charset=utf-8', //EDITED
+            data:  JSON.stringify(obj),
+            success: function(data) {
+                 console.log("melo",obj); //EDITED
+            },
+            error: function(rs, e) {     
+                 console.log("paila"); //EDITED                            
+            }
+        });
+
+  }
+  </script>
+{% endblock %}

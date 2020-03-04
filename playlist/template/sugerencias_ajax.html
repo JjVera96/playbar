@@ -1,0 +1,120 @@
+
+  {% for key,value in sugerencias.items %}
+  <tr>
+    <td scope="row">{{ forloop.counter}}</td>
+    <td>
+
+      <div class="container-fluid ">
+        <div class="row"> 
+          <div class="col-xs-12 col-sm-4 col-md-12 col-lg-4"> 
+            <img src="{{value.2}}">
+          </div>
+          <div class="col-xs-12 col-sm-4 col-md-6 col-lg-4" style="padding-top: 5px;">
+            <a href="https://www.youtube.com/watch?v={{key}}" class="text-white" target="_blank"  title="Ver en YouTube">{{value.0}}</a>
+          </div>
+          <div class="col-xs-12 col-sm-4 col-md-6 col-lg-4"> 
+
+            <button id="{{key}}a" value="{{key}}" class="btn btn-outline-success aceptar"><span class="glyphicon glyphicon-plus-sign">Añadir</span></button>
+
+            <button id="{{key}}n" value="{{key}}" class="btn btn-outline-danger negar"><span class="glyphicon glyphicon-remove-sign">Borrar</span></button>
+
+          </div>
+        </div>           
+      </div>
+
+    </td>
+  </tr>
+  {% endfor %}
+
+
+ <script type="text/javascript">
+    //aceptar sugerencia
+    $(function(){
+        $('.aceptar').click(function() {
+            var id = this.id;            
+            identifier = [id.slice(0, 0), '#', id.slice(0)].join('');
+            identifier_value = $(identifier).val();            
+            aceptar_sugerencia_ajax(identifier_value);
+        });
+    });
+
+    function aceptar_sugerencia_ajax(video_id){
+
+    var object = {'video_id': video_id }
+
+    aux_url = window.location.pathname.split("playlist/")[1];
+    path = '/ajax/accept_sugerencia/'
+    url = [aux_url.slice(0, 0), path, aux_url.slice(0)].join('');    
+      $.ajaxSetup({
+        headers: { "X-CSRFToken": '{{csrf_token}}' }
+      });
+      $.ajax({
+          type: 'POST',
+          url: url,
+          contentType: 'application/json; charset=utf-8', //EDITED
+          data:  JSON.stringify(object),
+          success: function(data) {
+               console.log("melo",object); //EDITED
+               var url_get_aceptar = "/ajax/load_sugerencia/";
+
+                $.get( url_get_aceptar )
+                  .done(function( data_get_aceptar ) {
+                     $("#sugerencias_update").html(data_get_aceptar);
+                     
+
+                     var url_load_videos = "/ajax/load_videos/";
+                     url_load_videos_join = [aux_url.slice(0, 0), url_load_videos, aux_url.slice(0)].join('');
+                      $.get( url_load_videos_join )
+                        .done(function( data_get_aceptar ) {
+                           $("#videos_update").html(data_get_aceptar);
+                      });
+
+                }); 
+          },
+          error: function(rs, e) {     
+               console.log("paila", rs, e); //EDITED                            
+          }
+      });
+    }
+
+    //negar sugerencia
+    $(function(){
+        $('.negar').click(function() {
+            console.log("negar");          
+            var id = this.id;            
+            identifier = [id.slice(0, 0), '#', id.slice(0)].join('');
+            identifier_value = $(identifier).val();            
+            negar_sugerencia_ajax(identifier_value);
+        });
+    });
+
+    function negar_sugerencia_ajax(video_id){
+
+    var object = {'video_id': video_id }
+    url = '/ajax/deny_sugerencia/';
+    
+      $.ajaxSetup({
+        headers: { "X-CSRFToken": '{{csrf_token}}' }
+      });
+      $.ajax({
+          type: 'POST',
+          url: url,
+          contentType: 'application/json; charset=utf-8', //EDITED
+          data:  JSON.stringify(object),
+          success: function(data) {
+              console.log("negar fino");
+
+               var url_get = "/ajax/load_sugerencia/";
+
+                $.get( url_get )
+                  .done(function( data_get ) {
+                     $("#sugerencias_update").html(data_get);
+                });   
+
+          },
+          error: function(rs, e) {     
+               console.log(" negar paila", rs, e); //EDITED                            
+          }
+      });
+    }
+  </script>

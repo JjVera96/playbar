@@ -1,0 +1,6 @@
+{% for elem in elementos %}
+	<tr id="{{elem.nombre}}">                  
+	  <td scope="row">{{ forloop.counter}}</td>
+	  <td >{{elem.nombre}}</td>
+	</tr>
+{% endfor %}

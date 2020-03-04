@@ -1,0 +1,278 @@
+{% load static %}
+<!doctype html>
+<html lang="ES">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>ePlayt | Registrar</title>
+
+    <!-- Bootstrap core CSS -->
+
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/new-age.min.css' %}" rel="stylesheet">
+    <style>
+      .login-body {
+      font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background: #f3f3f3;
+      color: #333;
+      font-size: 16px;
+      direction: ltr;
+      }
+
+      .form-signin
+      {
+          max-width: 700px;
+          padding: 15px;
+          margin: 0 auto;
+      }
+      .form-signin .form-signin-heading, .form-signin .checkbox
+      {
+          margin-bottom: 10px;
+      }
+      .form-signin .checkbox
+      {
+          font-weight: normal;
+      }
+      .form-signin .form-control
+      {
+          position: relative;
+          font-size: 16px;
+          height: auto;
+          padding: 10px;
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+      }
+      .form-signin .form-control:focus
+      {
+          z-index: 2;
+      }
+      .form-signin input[type="email"]
+      {
+          margin-bottom: -1px;
+          border-bottom-left-radius: 0;
+          border-bottom-right-radius: 0;
+      }
+      .form-signin input[type="password"]
+      {
+          margin-bottom: 10px;
+          border-top-left-radius: 0;
+          border-top-right-radius: 0;
+      }
+
+
+        .body{
+        background: url({% static 'image/bg-inicio.jpg' %}) no-repeat fixed center center;
+        background-size: cover;
+      }
+
+
+      .tablest {
+          background: rgb(255, 255, 255); /* This is for ie8 and below */
+          background: rgba(0, 0, 0, 0.5);
+        }
+
+
+    .cover-container {
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    /* Padding for spacing */
+    .inner {
+      padding: 2rem;
+    }
+
+
+    /*
+     * Header
+     */
+
+    .masthead {
+      margin-bottom: 2rem;
+    }
+
+    .masthead-brand {
+      margin-bottom: 0;
+      color: rgba(255,255,255,1);
+      background-color: transparent;
+    }
+
+    @media (min-width: 48em) {
+      .masthead-brand {
+        float: left;
+      }
+    }
+    footer
+{
+    position: absolute;
+    margin-top:93px;
+    width:100%;
+    height:100px;
+   background: rgba(0, 0, 0, 0.9);
+ }
+
+    </style>
+    <!-- Custom styles for this template -->
+  </head>
+
+   <body class="text-center body">
+
+
+     <div class="container-fluid col tablest">
+      <div class="masthead clearfix">
+            <div class="inner">
+              <a class="navbar-brand col-xs-9 col-sm-10 col-md-8" href="/"><img class="masthead-brand mb-4" src="{% static 'image/playbar.png' %}" alt="" width="200" height="40"></a>
+            </div>
+       </div>
+    </div>
+
+
+    <div class="login-body form-horizontal form-signin">
+      <img class="mb-4" src="{% static 'image/icon1.png' %}" alt="" width="85" height="105">
+      <div style="display:block;" id="paso1" class="container-row" >
+          <h4><b>Selecciona Tu Plan</b></h4><br>
+          <p>Adquiere los servicios de ePlayt de forma fácil seleccionando el plan que mas te guste</p>
+
+          <div align="center" class="col-sm-12 col-sm-off">
+            <button onclick="verificar(this.value);" type="submit" class="btn btn-success btn-block">Ver Los Planes</button>
+          </div>
+      </div>
+
+      <div id="paso2" style="display:none;" class=" row">
+
+        <h4><b>Selecciona Tu Plan</b></h4><br>
+        <div class="col-md-12">
+
+            <div class="card text-white " >
+              <div class="card text-center bg-info" >
+                <div class="card-header">MENSUAL</div>
+                <div class="card-body">
+                  <p class="card-text">Disfruta de todos los servicios de EPLAYT para ambientar tu establecimiento durante <b>un mes</b>, este plan tiene un costo de $$$$ el cobro se hara al final de cada mes</p>
+                  {% csrf_token %}
+                  {{ form.render }}
+                </div>
+              </div>
+            </div>
+             </div>
+
+            <div class="col-md-12">
+
+            <div class="card text-dark ">
+              <div class="card text-center bg-light">
+                <div class="card-header">SEMESTRAL</div>
+                <div class="card-body">
+                  <p class="card-text">Disfruta de todos los servicios de EPLAYT para ambientar tu establecimiento durante un <b>6 meses</b>, este plan tiene un costo de $$$$ el cobro se hara al final de cada mes</p>
+                  {% csrf_token %}
+                  {{ form2.render }}
+                </div>
+              </div>
+            </div>
+             </div>
+
+            <div class="col-md-12">
+
+            <div class="card text-white " >
+              <div class="card text-center bg-success">
+                <div class="card-header">ANUAL</div>
+                <div class="card-body">
+                  <p class="card-text">Disfruta de todos los servicios de EPLAYT para ambientar tu establecimiento durante <b>un año</b>, este plan tiene un costo de $$$$ el cobro se hara al final de cada mes</p>
+                  {% csrf_token %}
+                  {{ form3.render }}
+                </div>
+              </div>
+            </div>
+             </div>
+        </div>
+
+                  <div style="display:none;" id="paso4" class="container-row" >
+                      <h6>Paso 3 de 3</h6><h4><b>Selecciona Tu Metodo de Pago</b></h4><br>
+
+
+                      <div align="center" class="col-sm-12 col-sm-off">
+                        <button type="submit" class="btn btn-success btn-block">Comfirmar</button>
+                      </div>
+                  </div>
+          </div>
+
+
+
+      <footer>
+      <div class="container">
+        <p>&copy; Your Website 2018. All Rights Reserved.</p>
+        <ul class="list-inline">
+          <li class="list-inline-item">
+            <a href="#">Privacy</a>
+          </li>
+          <li class="list-inline-item">
+            <a href="#">Terms</a>
+          </li>
+          <li class="list-inline-item">
+            <a href="#">FAQ</a>
+          </li>
+        </ul>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+
+
+<script type="text/javascript">
+//<![CDATA[
+function verificar(){
+var p1 = document.getElementById('paso1');
+var p2 = document.getElementById('paso2');
+  if(p1.style.display == "block")
+  {
+    p1.style.display = "none";
+    p2.style.display = "block";
+  }
+}
+
+function verificar1(){
+var p1 = document.getElementById('paso2');
+var p2 = document.getElementById('paso3');
+  if(p1.style.display == "block"){
+    p1.style.display = "none";
+    p2.style.display = "block";
+  }
+}
+
+function verificar2(){
+var p1 = document.getElementById('paso3');
+var p2 = document.getElementById('paso4');
+  if(p1.style.display == "block"){
+    p1.style.display = "none";
+    p2.style.display = "block";
+  }
+}
+
+function coinciden(){
+var p1 = document.getElementById('password');
+var p2 = document.getElementById('repeatpassword');
+var btn_guardar = document.getElementById('btnhabilita');
+var estado = document.getElementById('alert');
+var estado2 = document.getElementById('alert2');
+
+  if( p1.value != p2.value){
+    document.getElementById('mensaje').innerHTML = "Las contraseñas no coinciden";
+    estado.style.display = "block";
+    estado2.style.display = "none";
+    btn_guardar.disabled = true
+  }else{
+    document.getElementById('mensaje1').innerHTML = "Las contraseñas coinciden";
+    estado.style.display = "none";
+    estado2.style.display = "block";
+    btn_guardar.disabled = false
+  }
+}
+//]]>
+</script>
