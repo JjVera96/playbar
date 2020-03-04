@@ -43,7 +43,7 @@ pyasn1-modules==0.2.2
 PyHamcrest==1.9.0
 pytz==2018.5
 qrcode==6.0
-requests==2.19.1
+requests==2.20.0
 requests-oauthlib==1.0.0
 rsa==3.4.2
 six==1.11.0
